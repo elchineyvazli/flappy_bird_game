@@ -1,7 +1,14 @@
 const bird = document.createElement('div');
 const game_container = document.getElementById('game_container');
+const game_inside = document.getElementById('game_inside');
 bird.id = "bird";
 game_container.append(bird);
+document.body.style.height = `${window.innerHeight}px`;
+game_container.style.height = `${window.innerHeight * .9}px`;
+
+let animationLeftValue = 0;
+
+game_container.style.top = `${(document.body.style.height.slice(0, document.body.style.height.length - 2) - game_container.style.height.slice(0, document.body.style.height.length - 2)) / 2}px`
 
 let count = 0;
 let velocity = 0;
@@ -9,7 +16,6 @@ let h = window.innerHeight / 100;
 bird.style.top = `${h}px`;
 let hList = [];
 
-document.body.style.height = `${window.innerHeight}px`
 
 let removeElementsFromArr = setInterval(() => {
     if (hList.includes(0) == false || hList.includes(window.innerHeight - bird.getBoundingClientRect().height) == false) {
@@ -55,3 +61,22 @@ document.addEventListener("keydown", function (e) {
 });
 
 animate();
+
+function bgAnimation() {
+    animationLeftValue -= 15;
+    game_inside.style.left = `${animationLeftValue}px`;
+    if (animationLeftValue == (game_container.getBoundingClientRect().width - Math.floor(game_inside.getBoundingClientRect().width / 15))) {
+        animationLeftValue = 0;
+    }
+    requestAnimationFrame(bgAnimation);
+    console.log(game_container.getBoundingClientRect().width);
+    console.log(game_inside.getBoundingClientRect().width / 15);
+}
+
+bgAnimation();
+
+
+// ((400)312)
+//    712
+
+// (( 700)12)
