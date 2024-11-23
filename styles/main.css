@@ -9,4 +9,20 @@
   height: 50px;
   border: solid 1px black;
   position: absolute;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+body #game_container {
+  width: 200%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-origin: solid 2px red;
+  background-color: antiquewhite;
 }/*# sourceMappingURL=main.css.map */
