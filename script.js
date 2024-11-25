@@ -1,8 +1,8 @@
-const bird = document.createElement('div');
+const plane = document.createElement('div');
 const game_container = document.getElementById('game_container');
 const game_inside = document.getElementById('game_inside');
-bird.id = "bird";
-game_container.append(bird);
+plane.id = "plane";
+game_container.append(plane);
 document.body.style.height = `${window.innerHeight}px`;
 game_container.style.height = `${window.innerHeight * .9}px`;
 
@@ -12,13 +12,32 @@ game_container.style.top = `${(document.body.style.height.slice(0, document.body
 
 let count = 0;
 let velocity = 0;
-let h = window.innerHeight / 100;
-bird.style.top = `${h}px`;
+let h = game_container.getBoundingClientRect().height / 100;
+const style = window.getComputedStyle(plane);
+const backgroundImage = style.backgroundImage;
+
+if (backgroundImage !== 'none') {
+    const url = backgroundImage.slice(5, -2);
+    const img = new Image();
+    img.src = url;
+
+    img.onload = () => {
+        console.log(`Background Image Width: ${img.width}`);
+        console.log(`Background Image Height: ${img.height}`);
+    };
+    plane.style.top = `${h}px`;
+    plane.style.backgroundImage = `url(${backgroundImage})`;
+    plane.style.width = `${Math.floor(img.width / (img.height / 70))}px`;
+    plane.style.height = "70px";
+} else {
+    console.log('No background image found!');
+}
+
 let hList = [];
 
 
 let removeElementsFromArr = setInterval(() => {
-    if (hList.includes(0) == false || hList.includes(window.innerHeight - bird.getBoundingClientRect().height) == false) {
+    if (hList.includes(0) == false || hList.includes(window.innerHeight - plane.getBoundingClientRect().height) == false) {
         hList = [];
     }
 }, 1000);
@@ -30,23 +49,23 @@ function animate() {
     velocity += .25;
     h += velocity;
 
-    if (h < 0) {
+    if (h < game_container.style.height.slice(0, document.body.style.height.length - 2) / 2) {
         h = 0;
     }
 
-    if (h > window.innerHeight - bird.getBoundingClientRect().height) {
-        h = window.innerHeight - bird.getBoundingClientRect().height;
+    if (h > game_container.getBoundingClientRect().height - plane.getBoundingClientRect().height) {
+        h = window.innerHeight - plane.getBoundingClientRect().height;
     }
 
-    if (h === window.innerHeight - bird.getBoundingClientRect().height || h === 0) {
+    if (h === game_container.getBoundingClientRect().height - plane.getBoundingClientRect().height || h === game_container.style.height.slice(0, document.body.style.height.length - 2) / 2) {
         velocity = 0;
     }
 
-    if (hList.filter(value => value === 0).length > 0 || hList.filter(value => value === window.innerHeight - bird.getBoundingClientRect().height).length > 0) {
+    if (hList.filter(value => value === game_container.style.height.slice(0, document.body.style.height.length - 2) / 2).length > 0 || hList.filter(value => value === game_container.getBoundingClientRect().height - plane.getBoundingClientRect().height).length > 0) {
         isStopTheGame = true;
     }
 
-    bird.style.top = `${h}px`;
+    plane.style.top = `${h}px`;
     requestAnimationFrame(animate);
 }
 
@@ -61,22 +80,15 @@ document.addEventListener("keydown", function (e) {
 });
 
 animate();
-
+let velocityBgAnimate = 10;
+let remainder = (game_inside.getBoundingClientRect().width - game_container.getBoundingClientRect().width) % velocityBgAnimate
 function bgAnimation() {
-    animationLeftValue -= 15;
+    animationLeftValue -= velocityBgAnimate;
     game_inside.style.left = `${animationLeftValue}px`;
-    if (animationLeftValue == (game_container.getBoundingClientRect().width - Math.floor(game_inside.getBoundingClientRect().width / 15))) {
+    if (Math.abs(animationLeftValue) == game_inside.getBoundingClientRect().width - game_container.getBoundingClientRect().width - remainder) {
         animationLeftValue = 0;
     }
     requestAnimationFrame(bgAnimation);
-    console.log(game_container.getBoundingClientRect().width);
-    console.log(game_inside.getBoundingClientRect().width / 15);
 }
 
 bgAnimation();
-
-
-// ((400)312)
-//    712
-
-// (( 700)12)
